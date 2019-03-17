@@ -3,15 +3,31 @@ Agile.components = Agile.components || {};
 
 /**
  * TODO
- * Selecting the date
- * allow for switching between months and years
  * show remaining days from previous month
+ * offset today
  */
 Agile.components.DropDownCalendar = function (rootEl) {
     var self = this;
 
     this.rootEl = rootEl;
+
+    this.options = rootEl.dataset.options || { startFromToday: false, offsetToday: 0 };
+    if (rootEl.dataset.options != undefined) {
+        this.options = JSON.parse(this.options)
+        this.options.startFromToday = (this.options.startFromToday === 'true') || false;
+        this.options.offsetToday = parseInt(this.options.offsetToday);
+    }
+
+    this.chosenDates = rootEl.querySelector('[data-chosen-dates]');
+    this._day = this.chosenDates.querySelectorAll('p')[0]
+    this._month = this.chosenDates.querySelectorAll('p')[1]
+
+    this.table = rootEl.querySelector('[data-table]');
+    this.header = rootEl.querySelector('[data-header]');
     this.monthYear = rootEl.querySelector('[data-month-year]');
+    this.dropDownContent = rootEl.querySelector('[data-drop-down-content]');
+    this.dropDownMonth = this.dropDownContent.querySelector('[data-dropdown-month]');
+    this.dropDownYear = this.dropDownContent.querySelector('[data-dropdown-year]');
     this.calendarDates = rootEl.querySelector('[data-dates]');
 
 
@@ -20,10 +36,60 @@ Agile.components.DropDownCalendar = function (rootEl) {
     this.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     this.days_short = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+    this._day.innerHTML = this.getCurrentDay();
+    this._month.innerHTML = this.months[this.getCurrentMonth()].substring(0, 3);
 
-    this.displayCalendar();
 
-    //this.displayCalendar({ month: 4, year: 2019 });
+    this.chosenDates.addEventListener('click', () => {
+        this.table.classList.toggle('hide');
+    });
+
+    this.header.addEventListener('click', () => {
+        this.dropDownContent.classList.toggle('show-content');
+        this.header.classList.toggle('set-color');
+    });
+
+    /* Setting up the Months and Years for the drop down content */
+    let _monthCounter = 0;
+    this.months.forEach((month) => {
+        this.dropDownMonth.innerHTML += `<p data-val="${_monthCounter}">${month}</p>`;
+        _monthCounter++;
+    });
+
+    let _offsetYears = 2;
+    for (let i = this.getCurrentYear() - _offsetYears; i < this.getCurrentYear() + _offsetYears + 1; i++) {
+        this.dropDownYear.innerHTML += `<p data-val="${i}">${i}</p>`;
+    }
+
+    let _selectedMonth = this.getCurrentMonth();
+    let _selectedYear = this.getCurrentYear();
+    /* Adding click even to each dropdown item */
+    [].slice.call(this.dropDownMonth.querySelectorAll('p')).forEach((month) => {
+        month.addEventListener('click', () => {
+            _selectedMonth = parseInt(month.getAttribute("data-val"));
+            this.monthYear.innerHTML = `${this.months[_selectedMonth]} ${_selectedYear}`;
+            this.displayCalendar({
+                month: _selectedMonth,
+                year: _selectedYear
+            });
+        });
+    });
+
+    /* Adding click even to each dropdown item */
+    [].slice.call(this.dropDownYear.querySelectorAll('p')).forEach((year) => {
+        year.addEventListener('click', () => {
+            _selectedYear = parseInt(year.getAttribute("data-val"));
+            this.monthYear.innerHTML = `${this.months[_selectedYear]} ${_selectedYear}`;
+            this.displayCalendar({
+                month: _selectedMonth,
+                year: _selectedYear
+            });
+        });
+    });
+
+
+    /* Setting the default */
+    this.displayCalendar({ month: this.getCurrentMonth(), year: this.getCurrentYear() });
 }
 
 /**
@@ -67,7 +133,7 @@ Agile.components.DropDownCalendar.prototype.getFirstIndexOfMonth = function (mon
 }
 
 /**
- * Gets the total number of days in the chosen month
+ * Gets the total number of days in the chosenDates month
  * @param {int} year ie 2019
  * @param {int} month index for months array (0 = January)
  * @return {int} total number of days in the month
@@ -78,7 +144,7 @@ Agile.components.DropDownCalendar.prototype.getTotalDaysOfMonth = function (year
 
 /**
  * Get Short Months
- * @param {int} index shortens the chosen month to 3 characters based on the index in the array
+ * @param {int} index shortens the chosenDates month to 3 characters based on the index in the array
  * @return {string} 3 letter format of the month
  */
 Agile.components.DropDownCalendar.prototype.getShortMonths = function (index) {
@@ -87,8 +153,8 @@ Agile.components.DropDownCalendar.prototype.getShortMonths = function (index) {
 
 /**
  * Get Short Days
- * @param {int} index shortens the chosen day to 3 characters based on the index in the array
- * @return {string} shortened string of the chosen day (3 letter format)
+ * @param {int} index shortens the chosenDates day to 3 characters based on the index in the array
+ * @return {string} shortened string of the chosenDates day (3 letter format)
  */
 Agile.components.DropDownCalendar.prototype.getShortDays = function (index) {
     return this.days[index].substr(0, 3);
@@ -113,6 +179,10 @@ Agile.components.DropDownCalendar.prototype.isToday = function (day, month, year
  * @returns {HTML} Calendar
  */
 Agile.components.DropDownCalendar.prototype.buildCalendar = function (firstDayOfMonth, days, config) {
+    if (this.calendarDates) {
+        this.calendarDates.innerHTML = null;
+    }
+
     var table = document.createElement('table');
     var tr = document.createElement('tr');
 
@@ -148,10 +218,34 @@ Agile.components.DropDownCalendar.prototype.buildCalendar = function (firstDayOf
                 td.classList.add('today')
             }
 
-            td.setAttribute('data-epoch', this.convertToUnix(new Date(config.year, config.month, parseInt(td.innerHTML))));
-            td.addEventListener('click', () => {
-                this.dateClickEvent(td);
-            });
+            if (this.options.startFromToday) {
+                //start filtering out dates
+                if (config.month < this.getCurrentMonth()) {
+                    if (config.year <= this.getCurrentYear()) {
+                        td.classList.add('otherMonth');
+                    }
+                } else if (config.month > this.getCurrentMonth()) {
+                    if (config.year < this.getCurrentYear()) {
+                        td.classList.add('otherMonth');
+                    }
+                } else {
+                    if (config.year < this.getCurrentYear()) {
+                        td.classList.add('otherMonth');
+                    }
+                }
+
+                if (config.month == this.getCurrentMonth() && config.year == this.getCurrentYear() && count < this.getCurrentDay() + this.options.offsetToday) {
+                    td.classList.add('otherMonth');
+                }
+            }
+
+            /* Add click event to valid dates */
+            if (!td.classList.contains('otherMonth')) {
+                td.setAttribute('data-epoch', this.convertToUnix(new Date(config.year, config.month, parseInt(td.innerHTML))));
+                td.addEventListener('click', () => {
+                    this.dateClickEvent(td);
+                });
+            }
 
             count++;
             tr.appendChild(td);
@@ -181,10 +275,34 @@ Agile.components.DropDownCalendar.prototype.buildCalendar = function (firstDayOf
                     td.classList.add('today')
                 }
 
-                td.setAttribute('data-epoch', this.convertToUnix(new Date(config.year, config.month, parseInt(td.innerHTML))));
-                td.addEventListener('click', () => {
-                    this.dateClickEvent(td);
-                });
+                if (this.options.startFromToday) {
+                    //start filtering out dates
+                    if (config.month < this.getCurrentMonth()) {
+                        if (config.year <= this.getCurrentYear()) {
+                            td.classList.add('otherMonth');
+                        }
+                    } else if (config.month > this.getCurrentMonth()) {
+                        if (config.year < this.getCurrentYear()) {
+                            td.classList.add('otherMonth');
+                        }
+                    } else {
+                        if (config.year < this.getCurrentYear()) {
+                            td.classList.add('otherMonth');
+                        }
+                    }
+
+                    if (config.month == this.getCurrentMonth() && config.year == this.getCurrentYear() && count < this.getCurrentDay() + this.options.offsetToday) {
+                        td.classList.add('otherMonth');
+                    }
+                }
+
+                /* Add click event to valid dates */
+                if (!td.classList.contains('otherMonth')) {
+                    td.setAttribute('data-epoch', this.convertToUnix(new Date(config.year, config.month, parseInt(td.innerHTML))));
+                    td.addEventListener('click', () => {
+                        this.dateClickEvent(td);
+                    });
+                }
 
                 count++;
                 tr.appendChild(td);
@@ -202,10 +320,6 @@ Agile.components.DropDownCalendar.prototype.buildCalendar = function (firstDayOf
  * @param {int} config.year ie 2019
  */
 Agile.components.DropDownCalendar.prototype.displayCalendar = function (config = {}) {
-
-    config.month = config.month || this.getCurrentMonth();
-    config.year = config.year || this.getCurrentYear();
-
     let builtCalendar = this.buildCalendar(this.getFirstIndexOfMonth(config.month, config.year), this.getTotalDaysOfMonth(config.year, config.month), config);
     this.monthYear.innerHTML = `${this.months[config.month]} ${config.year}`;
     this.calendarDates.appendChild(builtCalendar)
@@ -226,7 +340,7 @@ Agile.components.DropDownCalendar.prototype.convertToUnix = function (date) {
  * @return {Date} date object
  */
 Agile.components.DropDownCalendar.prototype.convertToDate = function (unix) {
-    return new Date(unix);
+    return new Date(parseInt(unix));
 }
 
 /**
@@ -234,11 +348,14 @@ Agile.components.DropDownCalendar.prototype.convertToDate = function (unix) {
  * @param {HTML element} el element to attach the click event to
  */
 Agile.components.DropDownCalendar.prototype.dateClickEvent = function (el) {
-    console.log(this.convertToDate(parseInt(el.getAttribute('data-epoch'))));
-    this.rootEl.setAttribute('data-selected-date', this.convertToDate(parseInt(el.getAttribute('data-epoch'))))
-}
+    this.rootEl.setAttribute('data-selected-date', el.getAttribute('data-epoch'));
+    this.table.classList.toggle('hide');
+    this.dropDownContent.classList.remove('show-content');
+    this.header.classList.remove('set-color');
 
-/***************************| Helper Functions |*********************************/
+    this._day.innerHTML = new Date(parseInt(this.rootEl.getAttribute('data-selected-date'))).getDate()
+    this._month.innerHTML = this.months[new Date(parseInt(this.rootEl.getAttribute('data-selected-date'))).getMonth()].substring(0, 3);
+}
 
 
 

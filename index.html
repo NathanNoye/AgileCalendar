@@ -1,19 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Drop Down Calendar</title>
+    <link rel="stylesheet" type="text/css" href="CSS/agile.min.css">
     <link rel="stylesheet" type="text/css" href="calendar.css">
 </head>
+
 <body>
-    <div data-component="dropDownCalendar">
-        <div data-header>
-            <span data-month-year></span>
+    <!-- 
+        Attribute: data-options
+        The attribute itself is optional but it takes two REQUIRED parameters:
+        startFromToday {Boolean} - if true, any date before today will be disabled
+        offsetToday {Integer} - the number of days from today that will be additionally disabled. Works with both negatives and positives
+     -->
+    <div data-component="dropDownCalendar" data-options='{"startFromToday" : "true", "offsetToday" : "5"}'>
+        <div data-chosen-dates>
+            <p data-day></p>
+            <p data-month></p>
         </div>
-        <div data-dates></div>
+
+        <div data-table class="hide">
+            <div data-header>
+                <span data-month-year></span>
+                <div data-drop-down-content>
+                    <div data-dropdown-month></div>
+                    <div data-dropdown-year></div>
+                </div>
+            </div>
+            <div data-dates></div>
+        </div>
     </div>
 
     <script src="calendar.js"></script>
 </body>
+
 </html>

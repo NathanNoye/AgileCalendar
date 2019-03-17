@@ -1,0 +1,381 @@
+/*YOUR CODE HERE*/
+/**
+  * COLORS
+  * Grey :#b4b6b8;
+  * Blue: #3b8dab;
+  *
+  * FONTS
+  * aileron Thin
+  * Norwester
+  */
+
+@font-face {
+    font-family: aileron;
+    src: url('../fonts/aileron.otf')
+}
+
+@font-face {
+    font-family: norwester;
+    src: url('../fonts/norwester.otf')
+}
+
+* {
+    font-family: aileron;
+}
+
+h2, h3 {
+    font-family: norwester;
+}
+
+/*********************************************/
+/*BREADCRUMBS*/
+/*********************************************/
+
+#breadcrumbsNav {
+    background-color: #3b8dab;
+    height: 40px;
+    margin-bottom: 40px;
+}
+
+
+.crumbs {
+    height: 40px;
+    list-style: none;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    max-width: 850px;
+    margin: auto;
+}
+
+.crumbs li {
+    display: flex;
+    justify-content: center;
+    background-color: black;
+    flex-direction: column;
+    text-align: center;
+    padding: 0 10px 0 5px;
+    text-align: center;
+    margin-right: 23px;
+}
+
+.crumbs li a {
+    color: #fff;
+    text-decoration: none;
+    position: relative;
+    height: 40px;
+    line-height: 40px;
+    transition: .2s;
+}
+
+.crumbs li a:before, .crumbs li a:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    border: 0 solid black;
+    border-width: 20px 17px;
+    width: 0;
+    height: 0;
+}
+
+.crumbs li a:after {
+    right: -44px;
+    border-color: transparent;
+    border-left-color: black;
+}
+
+.crumbs li a:before {
+    left: -34px;
+    border-left-color: transparent;
+}
+
+.active-crumb {
+    background-color: #3b8dab !important;
+}
+
+.active-crumb a {
+    background-color: #3b8dab;
+}
+
+.active-crumb a:before, .active-crumb a:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    border: 0 solid #3b8dab !important;
+    border-width: 20px 17px;
+    width: 0;
+    height: 0;
+}
+
+.active-crumb a:after {
+    right: -34px;
+    border-color: transparent;
+    border-left-color: #3b8dab !important;
+}
+
+.active-crumb a:before {
+    left: -34px;
+    border-left-color: transparent;
+}
+
+
+/*********************************************/
+/*MAIN CONTENT*/
+/*********************************************/
+
+#availablityAndRates {
+    border: 2px solid #B5B5B5;
+    padding: 10px;
+    max-width: 300px;
+    margin-bottom: 40px;
+    background-color: #fff;
+}
+
+.forms-bower input, .forms-bower select {
+    width: 100%;
+    max-width: 178px;
+    display: block;
+    margin: auto;
+    margin-bottom: 12px;
+    transition: .2s;
+    padding: 3px;
+}
+
+.forms-bower input:focus {
+    border: thin solid #3b8dab;
+    outline: none;
+}
+
+.roomsAndRates, .packages, .services, .checkout {
+    border: 2px solid #B5B5B5;
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: #fff;
+}
+
+.roomsAndRates .button, .packages .button, .services .button, .checkout .button {
+    border: none; 
+    color: #fff;
+    background-color: #3b8dab;
+    font-family: norwester;
+    font-size: 1.5em;
+    padding: 12px 20px;
+    margin-top: 20px;
+    transition: .2s;
+}
+
+.roomsAndRates .button:hover, .packages .button:hover, .services .button:hover, .checkout .button:hover {
+    background-color: #317791;
+    cursor: pointer;
+}
+
+.roomsAndRates ul {
+    margin-left: 20px;
+}
+
+.packages p, .services p {
+    line-height: 1.2;
+}
+
+.checkout input, .checkout select {
+    width: 100%;
+    padding: 5px;
+}
+
+.checkout input[type=checkbox] {
+    width: auto;
+}
+
+.checkout input:hover, .checkout label:hover {
+    cursor: pointer;
+}
+
+.small {
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.footer {
+    width: 100%;
+    height: 300px;
+    margin-top: 20px;
+    background-color: #B5B5B5;
+    color: black;
+    text-align: center;
+}
+
+/*********************************************/
+/*Custom Checkboxes*/
+/*********************************************/
+
+.checkout input[type=checkbox] {
+    display: none;
+}
+
+.checkout input[type=checkbox]:checked + label::before {
+    background-color: #3b8dab;
+    border: thin solid transparent;
+}
+
+.checkout label::before {
+    content: " ";
+    width: 20px;
+    height: 20px;
+    border: thin solid #B5B5B5;
+    display: inline-block;
+    margin-right: 7px;
+    vertical-align: middle;
+}
+
+
+/*********************************************/
+/*Image-Gallery*/
+/*********************************************/
+
+.Image-Gallery > .main-img {
+    object-fit: contain;
+    width: 100%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: 0.5s;
+}
+
+.bottom-row {
+    width: 100%;
+    height: 56px;
+    position: relative;
+    margin: 15px 0 0 0;
+}
+
+.bottom-row .thumbnails {
+    width: 80%;
+    height: 56px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.thumbnails {
+    height: 56px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.thumbnails ul {
+    list-style: none;
+    display: block;
+    width: 400%;
+    position: absolute;
+    height: 56px;
+    transition: margin-left 0.3s;
+    left: 0;
+    margin-left: 0;
+}
+
+.thumbnails ul li {
+    width: 83px;
+    float: left;
+    list-style: none;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.thumbnails-leftarrow {
+    left: 0px;
+    background-image: url(../svg/arrow_left.svg);
+    position: absolute;
+    width: 14px;
+    height: 28px;
+    right: 0px;
+    top: 50%;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    margin: -14px 0 0 0;
+}
+
+.thumbnails-rightarrow {
+    position: absolute;
+    width: 14px;
+    height: 28px;
+    right: 0px;
+    top: 50%;
+    background-repeat: no-repeat;
+    background-image: url(../svg/arrow_right.svg);
+    cursor: pointer;
+    margin: -14px 0 0 0;
+}
+
+.fadeOut {
+    opacity: 0;
+}
+
+.forms-button {
+    font-family: aileron;
+}
+
+@media only screen and (min-width : 320px) {
+    
+}
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (min-width : 480px) {
+
+}
+
+/* Mobile devices only */
+@media only screen and (max-width : 768px) {
+    .main-content-full-mobile {
+		width: 100%;
+		padding: 0px;
+		margin: 0px;
+    }
+    
+    .crumbs {
+        margin-left: 34px;
+        justify-content: center;
+    }
+
+    .two-col {
+        column-count: 2;
+    }
+
+    .crumbs li {
+        display: none;
+    }
+    
+    .active-crumb, .active-crumb + li{
+        display: flex !important;
+    }
+
+    .roomsAndRates .button {
+        margin-bottom: 20px;
+        width: 100%;
+
+    }
+
+    .checkout input, .checkout select {
+        margin-bottom: 12px;
+    }
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+    
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+
+}
+
+/* UP TO Medium Devices, Desktops */
+@media only screen and (max-width : 992px) {
+
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1024px) {
+
+}
