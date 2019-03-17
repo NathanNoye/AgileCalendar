@@ -12,9 +12,9 @@
 <body>
     <!-- 
         Attribute: data-options
-        The attribute itself is optional but it takes two REQUIRED parameters:
-        startFromToday {Boolean} - if true, any date before today will be disabled
-        offsetToday {Integer} - the number of days from today that will be additionally disabled. Works with both negatives and positives
+        The attribute itself is optional but it takes two parameters:
+        REQUIRED: startFromToday {Boolean} - if true, any date before today will be disabled
+        OPTIONAL: offsetToday {Integer} - the number of days from today that will be additionally disabled. Works with both negatives and positives || Default is 0
      -->
     <div data-component="dropDownCalendar" data-options='{"startFromToday" : "true", "offsetToday" : "0"}'>
         <div data-chosen-dates>

@@ -15,7 +15,7 @@ Agile.components.DropDownCalendar = function (rootEl) {
     if (rootEl.dataset.options != undefined) {
         this.options = JSON.parse(this.options)
         this.options.startFromToday = (this.options.startFromToday === 'true') || false;
-        this.options.offsetToday = parseInt(this.options.offsetToday);
+        this.options.offsetToday = parseInt(this.options.offsetToday) || 0;
     }
 
     this.chosenDates = rootEl.querySelector('[data-chosen-dates]');
