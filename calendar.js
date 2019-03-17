@@ -36,7 +36,7 @@ Agile.components.DropDownCalendar = function (rootEl) {
     this.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     this.days_short = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    this._day.innerHTML = this.getCurrentDay();
+    this._day.innerHTML = this.getCurrentDay() + this.options.offsetToday;
     this._month.innerHTML = this.months[this.getCurrentMonth()].substring(0, 3);
 
 
