@@ -88,6 +88,7 @@ Agile.components.DropDownCalendar = function (rootEl) {
     });
 
 
+    this.rootEl.setAttribute('data-selected-date', this.date.getTime() + (86400000 * this.options.offsetToday));
     /* Setting the default */
     this.displayCalendar({ month: this.getCurrentMonth(), year: this.getCurrentYear() });
 }
